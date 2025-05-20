@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 36,
+    fontSize: 28,
     color: '#000',
     fontFamily: 'LobsterTwo-Regular',
   },
