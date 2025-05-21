@@ -145,16 +145,20 @@ export default function GrilleSudoku() {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => router.push('/Nvl')} style={[styles.iconButton, styles.retour]}>
-          <Image source={require('../assets/images/arriere.png')} style={styles.icon} />
-        </TouchableOpacity>
+  <TouchableOpacity onPress={() => router.push('/Nvl')} style={styles.retour}>
+    <Image source={require('../assets/images/arriere.png')} style={styles.icon} />
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => console.log('Paramètres')} style={styles.param}>
+    <Image source={require('../assets/images/parametres-cog.png')} style={styles.icon} />
+  </TouchableOpacity>
+</View>
 
-        <Text style={styles.level}>{niveau}</Text>
 
-        <TouchableOpacity onPress={() => console.log('Paramètres')} style={[styles.iconButton, styles.param]}>
-          <Image source={require('../assets/images/parametres-cog.png')} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
+<View style={styles.infoRow}>
+  <Text style={styles.level}>{niveau}</Text>
+  <Text style={styles.timer}>⏱ {formatTime()}</Text>
+</View>
+
 
       <View style={styles.gridWrapper}>
         {grid.map((row, rowIndex) => (
@@ -215,7 +219,6 @@ export default function GrilleSudoku() {
           if (isGridCompleteAndValid()) Alert.alert("🎉 Félicitations", "Sudoku réussi !");
           else Alert.alert("❌ Erreur", "Il reste des erreurs ou des cases vides.");
         }} />
-        <Text style={styles.timer}>⏱ {formatTime()}</Text>
       </View>
     </View>
   );
@@ -230,22 +233,24 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   headerRow: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  iconButton: {
-    position: 'absolute',
-    top: 0,
-  },
-  retour: {
-    left: 20,
-  },
-  param: {
-    right: 20,
-  },
+  width: '100%',
+  height: 40,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingHorizontal: 20,
+  marginBottom: 10,
+},
+retour: {
+  position: 'absolute',
+  left: 10,
+  top: 0,
+},
+param: {
+  position: 'absolute',
+  right: 10,
+  top: 0,
+},
   icon: {
     width: 36,
     height: 36,
@@ -255,12 +260,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#0E41AE',
-  },
-  timer: {
-    fontSize: 18,
-    color: '#333',
-    marginTop: 10,
-    textAlign: 'center',
   },
   gridWrapper: {
     backgroundColor: '#ffffff',
@@ -322,7 +321,7 @@ key: {
   width: 36,
   height: 100,
   marginHorizontal: 2, // espace horizontal entre les chiffres
-  borderRadius: 10,
+  borderRadius: 15,
   backgroundColor: '#0E41AE',
   justifyContent: 'center',
   alignItems: 'center',
@@ -331,5 +330,13 @@ key: {
   color: '#fff',
   fontSize: 20,
   fontWeight: 'bold',
+},
+infoRow: {
+  width: GRID_SIZE,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 5,
+  paddingHorizontal: 4,
 },
 });
