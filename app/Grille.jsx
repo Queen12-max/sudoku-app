@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF7FF',
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: 50,
     flexShrink: 1,
   },
   headerRow: {
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 30,
   },
   iconButton: {
     position: 'absolute',
@@ -313,24 +313,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   keyboardWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 10,
-    width: '90%',
-  },
-  key: {
-    width: 30,
-    height: 100,
-    marginTop: 6,
-    borderRadius: 20,
-    backgroundColor: '#0E41AE',
-    alignItems: 'center',
-  },
+  flexDirection: 'row',
+  justifyContent: 'space-between', // au lieu de center
+  marginTop: 10,
+  width: '90%',
+},
+key: {
+  width: 36,
+  height: 100,
+  marginHorizontal: 2, // espace horizontal entre les chiffres
+  borderRadius: 10,
+  backgroundColor: '#0E41AE',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
   keyText: {
-    paddingTop: 15,
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  color: '#fff',
+  fontSize: 20,
+  fontWeight: 'bold',
+},
 });
