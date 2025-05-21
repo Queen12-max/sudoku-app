@@ -128,7 +128,7 @@ export default function GrilleSudoku() {
         <Text style={styles.level}>{niveau}</Text>
         <Text style={styles.timer}>⏱ {formatTime()}</Text>
         <TouchableOpacity onPress={() => console.log('Paramètres')}>
-          <Image source={require('../assets/images/parametres-cog.png')} style={styles.iconParam} />
+          <Image source={require('../assets/images/parametres-cog.png')} style={styles.icon} />
         </TouchableOpacity>
       </View>
 
@@ -203,16 +203,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 40,
     height: 40,
-    resizeMode: 'cover',
-    top: 56,
-    left: 32,
-  },
-  iconParam: {
-    width: 40,
-    height: 40,
-    resizeMode: 'cover',
-    top: 56,
-    right: 42,
+    resizeMode: 'contain',
   },
   level: {
     fontSize: 24,
