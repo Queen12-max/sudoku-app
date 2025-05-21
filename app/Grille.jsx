@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, Alert, Button } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
@@ -69,6 +69,7 @@ export default function GrilleSudoku() {
   const router = useRouter();
 
   const [grid, setGrid] = useState([]);
+  const [initialGrid, setInitialGrid] = useState([]);
   const [selectedCell, setSelectedCell] = useState(null);
   const [errorCells, setErrorCells] = useState([]);
   const [seconds, setSeconds] = useState(0);
@@ -77,6 +78,7 @@ export default function GrilleSudoku() {
     const fullGrid = generateCompleteGrid();
     const playableGrid = removeCells(fullGrid, niveau || 'Facile');
     setGrid(playableGrid);
+    setInitialGrid(playableGrid.map(row => [...row]));
   }, [niveau]);
 
   useEffect(() => {
@@ -97,12 +99,23 @@ export default function GrilleSudoku() {
       if (i !== col && grid[row][i] === value) return true;
       if (i !== row && grid[i][col] === value) return true;
     }
+    const startRow = row - (row % 3);
+    const startCol = col - (col % 3);
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const r = startRow + i;
+        const c = startCol + j;
+        if ((r !== row || c !== col) && grid[r][c] === value) return true;
+      }
+    }
     return false;
   };
 
   const handleInput = (num) => {
     if (!selectedCell) return;
     const [row, col] = selectedCell;
+    if (initialGrid[row][col] !== 0) return; // ne pas modifier les cases fixes
+
     const newGrid = [...grid];
     newGrid[row][col] = num;
     setGrid(newGrid);
@@ -119,15 +132,26 @@ export default function GrilleSudoku() {
     setErrorCells(errors);
   };
 
+  const isGridCompleteAndValid = () => {
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const val = grid[r][c];
+        if (val === 0 || hasConflict(r, c, val)) return false;
+      }
+    }
+    return true;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => router.push('/Nvl')}>
+        <TouchableOpacity onPress={() => router.push('/Nvl')} style={[styles.iconButton, styles.retour]}>
           <Image source={require('../assets/images/arriere.png')} style={styles.icon} />
         </TouchableOpacity>
+
         <Text style={styles.level}>{niveau}</Text>
-        <Text style={styles.timer}>⏱ {formatTime()}</Text>
-        <TouchableOpacity onPress={() => console.log('Paramètres')}>
+
+        <TouchableOpacity onPress={() => console.log('Paramètres')} style={[styles.iconButton, styles.param]}>
           <Image source={require('../assets/images/parametres-cog.png')} style={styles.icon} />
         </TouchableOpacity>
       </View>
@@ -142,13 +166,16 @@ export default function GrilleSudoku() {
               };
               const isSelected = selectedCell?.[0] === rowIndex && selectedCell?.[1] === colIndex;
               const isError = errorCells.includes(`${rowIndex},${colIndex}`);
+              const isFixed = initialGrid[rowIndex]?.[colIndex] !== 0;
               return (
                 <TouchableOpacity
                   key={colIndex}
                   onPress={() => setSelectedCell([rowIndex, colIndex])}
                   style={[styles.cell, borderStyle, isSelected && styles.selectedCell, isError && styles.errorCell]}
                 >
-                  <Text style={styles.cellText}>{cell !== 0 ? cell : ''}</Text>
+                  <Text style={[styles.cellText, isFixed && { color: '#888' }]}>
+                    {cell !== 0 ? cell : ''}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
@@ -182,6 +209,14 @@ export default function GrilleSudoku() {
           </TouchableOpacity>
         ))}
       </View>
+
+      <View style={{ marginTop: 20 }}>
+        <Button title="Valider la grille" onPress={() => {
+          if (isGridCompleteAndValid()) Alert.alert("🎉 Félicitations", "Sudoku réussi !");
+          else Alert.alert("❌ Erreur", "Il reste des erreurs ou des cases vides.");
+        }} />
+        <Text style={styles.timer}>⏱ {formatTime()}</Text>
+      </View>
     </View>
   );
 }
@@ -191,29 +226,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF7FF',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 40,
+    flexShrink: 1,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
     alignItems: 'center',
-    width: '90%',
-    marginBottom: 10,
+    marginBottom: 5,
+  },
+  iconButton: {
+    position: 'absolute',
+    top: 0,
+  },
+  retour: {
+    left: 20,
+  },
+  param: {
+    right: 20,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     resizeMode: 'contain',
   },
   level: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#0E41AE',
   },
   timer: {
     fontSize: 18,
     color: '#333',
-    marginHorizontal: 10,
+    marginTop: 10,
+    textAlign: 'center',
   },
   gridWrapper: {
     backgroundColor: '#ffffff',
@@ -273,15 +320,15 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   key: {
-    width: 50,
-    height: 50,
-    margin: 6,
-    borderRadius: 25,
+    width: 30,
+    height: 100,
+    marginTop: 6,
+    borderRadius: 20,
     backgroundColor: '#0E41AE',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   keyText: {
+    paddingTop: 15,
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',

@@ -155,8 +155,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 40,
-    height: 40,
+    paddingTop: 90,
+    width: 30,
+    height: 30,
     resizeMode: 'contain',
   },
   topRow: {
